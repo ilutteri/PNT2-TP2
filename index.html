@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container-fluid mt-3" id="app">
+        <h2>Busqueda por Nombre</h2>
+        <input type="text" class="form-control" v-model="busquedaPorNombre" @input="controlarCaracteres(busquedaPorNombre)"
+            placeholder="Ingresar un criterio de busqueda...">
+        <br>
+        <h2>Busqueda por Apellido</h2>
+        <input type="text" class="form-control" v-model="busquedaPorApellido" @input="controlarCaracteres(busquedaPorApellido)"
+        placeholder="Ingresar un criterio de busqueda...">
+        <br>
+        <h2>Busqueda por DNI</h2>
+        <input type="text" class="form-control" v-model="busquedaPorDni" @input="controlarCaracteres(busquedaPorDni)"
+        placeholder="Ingresar un criterio de busqueda...">
+        <br>
+        <div v-show="mostrarMensaje" class="col">
+            <div class="alert alert-danger" role="alert">
+                    Ingrese 3 o mas Caracteres
+            </div>
+        </div> 
+        <div class="card-deck m-0">
+            <div class="row">
+                <div class="col" v-for="persona in personasFiltradas">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                            <p class="card-text">dni {{persona.dni}}</p>
+                            <a href="#" class="card-link">{{persona.correo}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="personasFiltradas.length === 0" class="col">
+            <div class="alert alert-danger" role="alert">
+                No se encontraron resultados.
+            </div>
+        </div>
+
+
+        
+    </div>
+        
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const { createApp } = Vue
+        var app = createApp({
+            data() {
+                return {
+                    busquedaPorNombre: '',
+                    busquedaPorApellido: '',
+                    busquedaPorDni: '',
+                    mostrarMensaje : false,
+                    //Aquí, en este array es donde tienen que agregar su información
+                    personas: [
+                        {
+                            nombre: "Daniel",
+                            apellido: "Sanchez",
+                            correo: "danielsanchez68@hotmail.com",
+                            dni: "20442873"
+                        },
+                        {
+                            nombre: "Juan",
+                            apellido: "Perez",
+                            correo: "j@p.gmail.com",
+                            dni: "12345678"
+                        },
+                        {
+                            nombre: "Ana",
+                            apellido: "Suarez",
+                            correo: "a@s.gmail.com",
+                            dni: "87654321"
+                        },
+                        {
+                            nombre: "Ignacio",
+                            apellido: "Lutteri",
+                            correo: "ignacio@yahoo.com",
+                            dni: "35407893"
+                        },
+                    ]
+                }
+            },
+            computed: {
+                personasFiltradas() {
+
+                    let personasFiltradas = this.personas;
+
+                    if(this.busquedaPorNombre.length >= 3){
+                        personasFiltradas = personasFiltradas.filter(persona => persona.nombre.toLowerCase().includes(this.busquedaPorNombre.toLowerCase()))
+                    }
+
+                    if(this.busquedaPorApellido.length >= 3){
+                        personasFiltradas = personasFiltradas.filter(persona => persona.apellido.toLowerCase().includes(this.busquedaPorApellido.toLowerCase()))
+                    }
+
+                    if(this.busquedaPorDni.length >= 3){
+                        personasFiltradas = personasFiltradas.filter(persona => persona.dni.toLowerCase().includes(this.busquedaPorDni.toLowerCase()))
+                    }
+
+
+                    return personasFiltradas;
+                }
+            },
+            methods: {
+                getNombreCompleto(persona) {
+                    return `${persona.nombre} ${persona.apellido}`
+                },
+                controlarCaracteres(busqueda) {
+                    if (busqueda.length < 3 && busqueda.length != 0) {
+                        this.mostrarMensaje = true;
+                    } else {
+                        this.mostrarMensaje = false;
+                    }
+                }
+            }
+        }).mount('#app')
+    </script>    
+</body>
+</html>
+
